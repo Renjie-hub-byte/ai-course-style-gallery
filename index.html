@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 课程片 · 画风十选</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#101318; color:#E6EAF0; padding:48px 28px 90px;
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; }
+  header{ margin-bottom:40px; }
+  h1{ font-size:34px; font-weight:800; letter-spacing:.5px; }
+  .sub{ margin-top:12px; color:#8A94A3; font-size:16px; line-height:1.7; }
+  .sub b{ color:#C9D2DE; font-weight:600; }
+  .note{ margin-top:18px; padding:14px 18px; border-left:3px solid #4A5568; background:#171B22;
+    color:#9AA5B4; font-size:14px; border-radius:0 8px 8px 0; }
+
+  .grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:30px; }
+  @media (max-width:900px){ .grid{ grid-template-columns:1fr; } body{padding:28px 16px 70px;} h1{font-size:26px;} }
+
+  .item{ background:#171B22; border:1px solid #232A34; border-radius:16px; overflow:hidden; }
+
+  /* ── 预览画面：所有画风共用同一构图，只有变量不同 ── */
+  .pv{ position:relative; aspect-ratio:16/9; overflow:hidden;
+       background:var(--bg); border-bottom:1px solid #232A34; }
+  .pv .ground{ position:absolute; left:0; right:0; bottom:0; height:22%; background:var(--ground); }
+  .pv .ground::after{ content:""; position:absolute; left:0; right:0; top:0; height:2px; background:var(--groundline); }
+
+  .pv .steps{ position:absolute; left:7%; bottom:22%; width:46%; height:54%; }
+  .pv .steps i{ position:absolute; bottom:0; width:30%;
+      border-radius:var(--r) var(--r) 0 0;
+      background:var(--s1); box-shadow:var(--stepShadow); border:var(--stroke); }
+  .pv .steps i:nth-child(1){ left:0;   height:42%; }
+  .pv .steps i:nth-child(2){ left:35%; height:66%; background:var(--s2); }
+  .pv .steps i:nth-child(3){ left:70%; height:92%; background:var(--s3); }
+
+  .pv .paper{ position:absolute; right:10%; bottom:26%; width:25%; aspect-ratio:.78;
+      background:var(--paper); border-radius:calc(var(--r) + 2px); box-shadow:var(--shadow);
+      border:var(--stroke); }
+  .pv .paper::after{ content:""; position:absolute; left:14%; top:19%; width:58%; height:5%;
+      border-radius:5px; background:var(--line); }
+  .pv .paper::before{ content:""; position:absolute; left:14%; top:33%; width:40%; height:5%;
+      border-radius:5px; background:var(--line2); }
+
+  .pv .tag{ position:absolute; left:7%; top:12%; padding:.9em 1.3em; border-radius:var(--tagR);
+      background:var(--tagBg); color:var(--tagInk); border:var(--stroke);
+      font-size:clamp(12px,1.7vw,19px); line-height:1.1; font-weight:800; letter-spacing:3px; box-shadow:var(--shadow); }
+
+  .pv .deco{ position:absolute; right:8%; top:11%; width:11%; aspect-ratio:1; border-radius:50%;
+      background:var(--deco); opacity:var(--decoOp); }
+
+  .pv .tex{ position:absolute; inset:0; pointer-events:none; background-image:var(--tex); }
+
+  /* ── 画风 1 · 暖白工艺（当前方案）── */
+  .item[data-s="warm"]{
+    --bg:#FCF7EC; --ground:#EBE3D2; --groundline:rgba(34,166,179,.3);
+    --s1:#8FD8E0; --s2:#F7D06E; --s3:#F2A46B;
+    --paper:#FFFFFF; --line:#C4D1D7; --line2:#DCE5E9;
+    --tagBg:#FFFFFF; --tagInk:#16232B; --deco:#F2903C; --decoOp:.85;
+    --r:12px; --tagR:11px; --stroke:none; --tex:none;
+    --shadow:0 12px 28px rgba(70,55,30,.16); --stepShadow:0 8px 20px rgba(70,55,30,.14);
+  }
+  /* ── 画风 2 · 深空发光 ── */
+  .item[data-s="deep"]{
+    --bg:#0F1114; --ground:#14181D; --groundline:rgba(50,186,238,.35);
+    --s1:#1E3348; --s2:#2C4A63; --s3:#3C6180;
+    --paper:#F2EFE8; --line:#8FA3B3; --line2:#B9C6D1;
+    --tagBg:rgba(50,186,238,.14); --tagInk:#32BAEE; --deco:#32BAEE; --decoOp:.55;
+    --r:10px; --tagR:10px; --stroke:2px solid rgba(50,186,238,.42);
+    --tex:radial-gradient(circle at 22% 18%, rgba(255,255,255,.07) 0 1px, transparent 1px),
+          radial-gradient(circle at 68% 62%, rgba(255,255,255,.06) 0 1px, transparent 1px);
+    --shadow:0 10px 30px rgba(0,0,0,.55), 0 0 26px rgba(50,186,238,.22);
+    --stepShadow:0 0 26px rgba(50,186,238,.28);
+  }
+  /* ── 画风 3 · 纸本剪贴 ── */
+  .item[data-s="vox"]{
+    --bg:#F3EDE2; --ground:#E4DAC9; --groundline:rgba(27,26,23,.35);
+    --s1:#2F5D62; --s2:#C8402F; --s3:#E8B33C;
+    --paper:#FBF8F2; --line:#1B1A17; --line2:#6B655B;
+    --tagBg:#1B1A17; --tagInk:#F3EDE2; --deco:#C8402F; --decoOp:.9;
+    --r:3px; --tagR:3px; --stroke:2px solid #1B1A17;
+    --tex:repeating-linear-gradient(0deg, rgba(27,26,23,.045) 0 1px, transparent 1px 4px);
+    --shadow:6px 6px 0 rgba(27,26,23,.85); --stepShadow:5px 5px 0 rgba(27,26,23,.8);
+  }
+  /* ── 画风 4 · 黑板粉笔 ── */
+  .item[data-s="chalk"]{
+    --bg:#23302B; --ground:#2E3D37; --groundline:rgba(241,239,230,.3);
+    --s1:#F4D35E; --s2:#E87D5A; --s3:#A9B3AA;
+    --paper:#F1EFE6; --line:#6E7B72; --line2:#98A49A;
+    --tagBg:rgba(241,239,230,.1); --tagInk:#F4D35E; --deco:#F4D35E; --decoOp:.5;
+    --r:8px; --tagR:8px; --stroke:2px dashed rgba(241,239,230,.55);
+    --tex:radial-gradient(circle at 30% 40%, rgba(255,255,255,.05) 0 2px, transparent 2px),
+          radial-gradient(circle at 70% 70%, rgba(255,255,255,.04) 0 2px, transparent 2px);
+    --shadow:0 8px 22px rgba(0,0,0,.4);
+    --stepShadow:0 0 22px rgba(244,211,94,.2);
+  }
+  /* ── 画风 5 · 包豪斯几何 ── */
+  .item[data-s="bauhaus"]{
+    --bg:#EFE9DD; --ground:#DFD6C4; --groundline:#111;
+    --s1:#D62828; --s2:#1D4E89; --s3:#F0C420;
+    --paper:#FFFFFF; --line:#111111; --line2:#555555;
+    --tagBg:#FFFFFF; --tagInk:#111111; --deco:#D62828; --decoOp:1;
+    --r:0px; --tagR:0px; --stroke:3px solid #111111;
+    --tex:none;
+    --shadow:0 0 0 3px #111; --stepShadow:0 0 0 3px #111;
+  }
+  /* ── 画风 6 · 雪原冷白 ── */
+  .item[data-s="snow"]{
+    --bg:#E9EEF0; --ground:#DDE5E8; --groundline:rgba(62,124,140,.4);
+    --s1:#D9482B; --s2:#3E7C8C; --s3:#8FA9B5;
+    --paper:#FFFFFF; --line:#B9C8CF; --line2:#D3DDE2;
+    --tagBg:#FFFFFF; --tagInk:#1F2A30; --deco:#D9482B; --decoOp:.8;
+    --r:14px; --tagR:13px; --stroke:1px solid rgba(31,42,48,.12);
+    --tex:none;
+    --shadow:0 10px 26px rgba(31,42,48,.12); --stepShadow:0 8px 20px rgba(31,42,48,.12);
+  }
+  /* ── 画风 7 · 海报黄 ── */
+  .item[data-s="poster"]{
+    --bg:#FFD23F; --ground:#F5BE28; --groundline:#14213D;
+    --s1:#FF5A36; --s2:#14213D; --s3:#FFF6D6;
+    --paper:#FFF6D6; --line:#14213D; --line2:#4A4433;
+    --tagBg:#14213D; --tagInk:#FFD23F; --deco:#FF5A36; --decoOp:1;
+    --r:6px; --tagR:6px; --stroke:4px solid #14213D;
+    --tex:none;
+    --shadow:8px 8px 0 #14213D; --stepShadow:6px 6px 0 #14213D;
+  }
+  /* ── 画风 8 · 暖木杂志 ── */
+  .item[data-s="wood"]{
+    --bg:#EDE3D1; --ground:#DFD2BC; --groundline:rgba(63,91,75,.4);
+    --s1:#C4552D; --s2:#3F5B4B; --s3:#D9A05B;
+    --paper:#F7F1E6; --line:#8A7A66; --line2:#B3A28C;
+    --tagBg:#2B2622; --tagInk:#EDE3D1; --deco:#C4552D; --decoOp:.85;
+    --r:5px; --tagR:5px; --stroke:1px solid rgba(43,38,34,.35);
+    --tex:repeating-linear-gradient(90deg, rgba(43,38,34,.03) 0 1px, transparent 1px 5px);
+    --shadow:0 12px 26px rgba(43,38,34,.2); --stepShadow:0 8px 18px rgba(43,38,34,.18);
+  }
+  /* ── 画风 9 · 深墨金属 ── */
+  .item[data-s="metal"]{
+    --bg:#121417; --ground:#1A1D21; --groundline:rgba(242,179,61,.4);
+    --s1:#2A2E33; --s2:#3B4046; --s3:#4E555C;
+    --paper:#F2EFE8; --line:#8B9198; --line2:#AEB4BA;
+    --tagBg:rgba(242,179,61,.14); --tagInk:#F2B33D; --deco:#F2B33D; --decoOp:.7;
+    --r:6px; --tagR:6px; --stroke:1px solid rgba(242,179,61,.3);
+    --tex:linear-gradient(160deg, rgba(255,255,255,.05), transparent 46%);
+    --shadow:0 14px 34px rgba(0,0,0,.6); --stepShadow:0 0 26px rgba(242,179,61,.16);
+  }
+  /* ── 画风 10 · 糖果玩具 ── */
+  .item[data-s="candy"]{
+    --bg:#FFF8F0; --ground:#F6E8DC; --groundline:#2A1F2E;
+    --s1:#FF8FA8; --s2:#7FE0D0; --s3:#FFD35C;
+    --paper:#FFFFFF; --line:#E2B8C6; --line2:#C9DCD9;
+    --tagBg:#2A1F2E; --tagInk:#FFF8F0; --deco:#7FE0D0; --decoOp:1;
+    --r:22px; --tagR:22px; --stroke:3px solid #2A1F2E;
+    --tex:none;
+    --shadow:0 10px 0 rgba(42,31,46,.9), 0 14px 30px rgba(42,31,46,.2);
+    --stepShadow:0 8px 0 rgba(42,31,46,.16);
+  }
+
+  /* ── 卡片文字区 ── */
+  .meta{ padding:18px 20px 20px; }
+  .meta h3{ font-size:18px; font-weight:800; letter-spacing:.5px; display:flex; align-items:baseline; gap:10px; }
+  .meta h3 span{ font-size:12px; font-weight:700; color:#6C7787; letter-spacing:2px; }
+  .meta p{ margin-top:8px; color:#9AA5B4; font-size:14px; line-height:1.65; }
+  .sw{ display:flex; gap:7px; margin-top:14px; }
+  .sw i{ width:22px; height:22px; border-radius:6px; border:1px solid rgba(255,255,255,.12); }
+  .badge{ display:inline-block; margin-top:14px; padding:4px 10px; border-radius:6px; font-size:12px;
+    font-weight:700; letter-spacing:1px; background:rgba(92,208,163,.14); color:#5CD0B3; }
+  .badge.warn{ background:rgba(240,196,105,.14); color:#F0C469; }
+
+  footer{ margin-top:52px; color:#5F6A79; font-size:13px; line-height:1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>AI 课程片 · 画风十选</h1>
+    <p class="sub">十种画风用<b>同一组元素</b>画：三级台阶、一个胶囊标签、一张纸。<br>
+       这样比的是画风本身，不是构图差异。挑定一种，整片 38 个镜头就按它统一。</p>
+    <p class="note">用途：公司内部培训片《AI 如何从聊天工具变成工作助手》。手机可直接看，点开不用等。</p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    · 全部为静态示意，实际成片每个镜头 2–8 秒，会带入场动作与镜头运动。<br>
+    · 若某种画风方向对但细节要改（比如更亮、描边更粗），说一声即可微调。
+  </footer>
+</div>
+
+<script>
+const STYLES = [
+  ["warm","暖白工艺","当前方案。暖白底 + 青黄橙三档实色，靠柔和投影分层。明亮不刺眼，会议室投影和手机上都不脏。",
+    ["#FCF7EC","#8FD8E0","#F7D06E","#F2A46B","#22A6B3"],"已用于成片"],
+  ["deep","深空发光","深墨底 + 发光青。视觉冲击强、有科技感，缺点是暗，手机上看偏沉。",
+    ["#0F1114","#1E3348","#32BAEE","#3C6180","#F2EFE8"],"偏暗"],
+  ["vox","纸本剪贴","米纸底 + 硬边黑框 + 剪报色块，像拼贴档案。有观点感，适合讲行业和数据。",
+    ["#F3EDE2","#2F5D62","#C8402F","#E8B33C","#1B1A17"],null],
+  ["chalk","黑板粉笔","深绿黑板 + 粉笔色，虚线描边像手画。亲切、像上课，适合内部培训。",
+    ["#23302B","#F4D35E","#E87D5A","#A9B3AA","#F1EFE6"],null],
+  ["bauhaus","包豪斯几何","米底 + 红蓝黄原色 + 粗黑边，零圆角。理性、有设计感，偏正式。",
+    ["#EFE9DD","#D62828","#1D4E89","#F0C420","#111111"],null],
+  ["snow","雪原冷白","冷白底 + 砖红与蓝绿点缀，极简细边。干净克制，偏冷静,少一点活泼。",
+    ["#E9EEF0","#D9482B","#3E7C8C","#8FA9B5","#1F2A30"],null],
+  ["poster","海报黄","高饱和黄底 + 橙红与深蓝 + 厚黑边，硬阴影。最抢眼,适合强调口号和结论。",
+    ["#FFD23F","#FF5A36","#14213D","#FFF6D6","#111111"],"最跳"],
+  ["wood","暖木杂志","暖木底 + 砖橙与墨绿，纸纹细边。有杂志质感，稳重里带温度。",
+    ["#EDE3D1","#C4552D","#3F5B4B","#D9A05B","#2B2622"],null],
+  ["metal","深墨金属","深墨底 + 金色点缀 + 金属高光。高级、克制，适合给老板看的高层版本。",
+    ["#121417","#2A2E33","#F2B33D","#4E555C","#F2EFE8"],"偏暗"],
+  ["candy","糖果玩具","奶白底 + 糖果粉绿黄 + 粗描边 + 硬阴影，大圆角。最活泼,像儿童科普。",
+    ["#FFF8F0","#FF8FA8","#7FE0D0","#FFD35C","#2A1F2E"],"最活泼"],
+];
+
+const pv = `
+  <div class="ground"></div>
+  <div class="deco"></div>
+  <div class="tag">知识库</div>
+  <div class="steps"><i></i><i></i><i></i></div>
+  <div class="paper"></div>
+  <div class="tex"></div>`;
+
+document.getElementById('grid').innerHTML = STYLES.map(([k,name,desc,sw,badge],idx)=>`
+  <div class="item" data-s="${k}">
+    <div class="pv">${pv}</div>
+    <div class="meta">
+      <h3>${name}<span>画风 ${String(idx+1).padStart(2,'0')}</span></h3>
+      <p>${desc}</p>
+      <div class="sw">${sw.map(c=>`<i style="background:${c}"></i>`).join('')}</div>
+      ${badge?`<div class="badge ${badge.includes('暗')?'warn':''}">${badge}</div>`:''}
+    </div>
+  </div>`).join('');
+</script>
+</body>
+</html>
